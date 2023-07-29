@@ -1,0 +1,32 @@
+services:
+  gateway:
+    build: ./gateway
+    restart: always
+    hostname: gateway
+    env_file:
+      - ./gateway/.env
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+  user:
+    build: ./user
+    restart: always
+    hostname: user
+    env_file:
+      - ./user/.env
+    networks:
+      - backend
+  db-user:
+    image: mongo
+    restart: always
+    volumes:
+      - "./db/data/db-files:/data/db"
+      - "./db/init/:/docker-entrypoint-initdb.d/"
+    ports:
+      - 27018:27017
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
